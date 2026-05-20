@@ -53,17 +53,20 @@ class Router
             }
 
             if (is_array($callback)) {
-                $controllerName = $callback[0];
-                $methodName     = $callback[1];
+            $controllerName = $callback[0];
+            $methodName     = $callback[1];
 
-                if (class_exists($controllerName)) {
-                    $controllerInstance = new $controllerName();
-                    if (method_exists($controllerInstance, $methodName)) {
-                        $controllerInstance->$methodName();
-                        return;
-                    }
+            if (class_exists($controllerName)) {
+                $controllerInstance = new $controllerName();
+                
+                if (method_exists($controllerInstance, $methodName)) {
+                    // تحويل الـ Request لكائن يمرر تلقائياً للدالة
+                    $requestInstance = new \Core\Request();
+                    $controllerInstance->$methodName($requestInstance);
+                    return;
                 }
             }
+        }
         }
 
         Response::json([

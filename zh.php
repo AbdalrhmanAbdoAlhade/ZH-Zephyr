@@ -18,10 +18,27 @@ switch ($command) {
         migrateTables();
         break;
 
+    case 'vendor:publish':
+        $provider = $argv[2] ?? null;
+        if (!$provider) {
+            echo "❌ Please specify the package provider class.\n";
+            exit(1);
+        }
+        $provider = str_replace('/', '\\', $provider);
+        if (class_exists($provider) && method_exists($provider, 'boot')) {
+            $instance = new $provider();
+            $instance->boot();
+            echo "✔ Package assets published successfully!\n";
+        } else {
+            echo "❌ Provider class [{$provider}] not found or boot() method missing.\n";
+        }
+        break;
+
     default:
         echo "Available Commands:\n";
-        echo "  php zh db:create   -> To create the database from .env configs\n";
-        echo "  php zh db:migrate  -> To run all SQL files inside database/migrations/\n";
+        echo "  php zh.php db:create       -> To create the database from .env configs\n";
+        echo "  php zh.php db:migrate      -> To run all SQL files inside database/migrations/\n";
+        echo "  php zh.php vendor:publish  -> To publish third-party package assets\n";
         break;
 }
 
@@ -86,7 +103,7 @@ function migrateTables() {
             die("❌ Migration process stopped due to an error.\n");
         }
     }
-
+    
     echo "--------------------------------------------------\n";
     echo "✔ All migrations executed successfully!\n";
 }

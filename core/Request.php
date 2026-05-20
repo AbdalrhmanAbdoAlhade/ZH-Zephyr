@@ -17,6 +17,11 @@ class Request
     {
         return strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
     }
+    
+    public function body(): array 
+{
+    return self::getBody();
+}
 
     // جلب وتصفية كل البيانات القادمة (سواء من الـ URL أو الـ Body)
     public static function getBody(): array 

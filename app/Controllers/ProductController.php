@@ -3,43 +3,33 @@
 namespace App\Controllers;
 
 use Core\Request;
-use Core\DB;
+use Core\Response;
+use App\Models\Product;
 
-class ProductController extends Controller 
+class ProductController
 {
-    public function index() 
+    // جلب المنتجات عبر الـ Model
+    public function index(Request $request): void
     {
-        $stmt = DB::query("SELECT id, name, price FROM products ORDER BY id DESC");
-        $products = $stmt->fetchAll();
-
-        $this->sendJson([
-            "status" => true,
-            "data" => $products
-        ]);
+        $products = Product::all();
+        Response::json($products);
     }
 
-    public function store() 
+    // تخزين منتج جديد
+    public function store(Request $request): void
     {
-        $input = Request::getBody();
+        $data = $request->body();
 
-        if (empty($input['name']) || empty($input['price'])) {
-            $this->sendJson([
-                "status" => false,
-                "message" => "Name and Price are required!"
-            ], 400);
+        // تحقق سريع
+        if (empty($data['name']) || empty($data['price'])) {
+            Response::json(["message" => "Name and Price are required!"], 400);
         }
 
-        DB::query(
-            "INSERT INTO products (name, price) VALUES (:name, :price)",
-            [
-                'name'  => $input['name'],
-                'price' => $input['price']
-            ]
-        );
+        $product = Product::create([
+            'name'  => $data['name'],
+            'price' => $data['price']
+        ]);
 
-        $this->sendJson([
-            "status" => true,
-            "message" => "Product [{$input['name']}] saved into Database successfully!"
-        ], 201);
+        Response::json($product, 201);
     }
 }
