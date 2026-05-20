@@ -4,7 +4,6 @@ const ASSETS = [
     '/manifest.json'
 ];
 
-// تثبيت السيرفس وركر وكاش الـ Assets الأساسية
 self.addEventListener('install', (e) => {
     e.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
@@ -13,7 +12,6 @@ self.addEventListener('install', (e) => {
     );
 });
 
-// جلب البيانات من الكاش في حالة الـ Offline
 self.addEventListener('fetch', (e) => {
     e.respondWith(
         caches.match(e.request).then((response) => {

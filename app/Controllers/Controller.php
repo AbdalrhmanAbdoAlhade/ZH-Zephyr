@@ -6,7 +6,6 @@ use Core\Response;
 
 class Controller 
 {
-    // دالة مساعدة سريعة للرد بـ JSON من داخل أي Controller
     protected function sendJson(array $data, int $statusCode = 200): void 
     {
         Response::json($data, $statusCode);

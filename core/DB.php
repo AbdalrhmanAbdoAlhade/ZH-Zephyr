@@ -9,15 +9,12 @@ class DB
 {
     private static ?PDO $instance = null;
 
-    // منع إنشاء كائن من الكلاس مباشرة (Singleton)
     private function __construct() {}
 
-    // جلب اتصال الـ PDO (إنشاء اتصال واحد فقط وإعادة استخدامه)
     public static function connect(): PDO 
     {
         if (self::$instance === null) {
             try {
-                // جلب الإعدادات من الملف
                 $config = require __DIR__ . '/../config/database.php';
                 
                 $dsn = "mysql:host={$config['host']};dbname={$config['dbname']};charset={$config['charset']}";
@@ -30,7 +27,6 @@ class DB
 
                 self::$instance = new PDO($dsn, $config['username'], $config['password'], $options);
             } catch (PDOException $e) {
-                // في حال فشل الاتصال، نرجع رد JSON احترافي بدل ما نسرب بيانات السيرفر
                 Response::json([
                     "status" => false,
                     "message" => "Database Connection Failed: " . $e->getMessage()
@@ -41,7 +37,6 @@ class DB
         return self::$instance;
     }
 
-    // دالة مساعدة سريعة لتنفيذ الـ Queries وحمايتها تلقائياً (Prepared Statements)
     public static function query(string $sql, array $params = []) 
     {
         $stmt = self::connect()->prepare($sql);

@@ -7,10 +7,8 @@ use Core\DB;
 
 class ProductController extends Controller 
 {
-    // جلب المنتجات من القاعدة حياً
     public function index() 
     {
-        // استخدام الدالة المساعدة المحمية
         $stmt = DB::query("SELECT id, name, price FROM products ORDER BY id DESC");
         $products = $stmt->fetchAll();
 
@@ -20,7 +18,6 @@ class ProductController extends Controller
         ]);
     }
 
-    // إدخال منتج جديد في القاعدة بأمان
     public function store() 
     {
         $input = Request::getBody();
@@ -32,7 +29,6 @@ class ProductController extends Controller
             ], 400);
         }
 
-        // إدخال البيانات باستخدام Prepared Statements لحماية السيرفر
         DB::query(
             "INSERT INTO products (name, price) VALUES (:name, :price)",
             [

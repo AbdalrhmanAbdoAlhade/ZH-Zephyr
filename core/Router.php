@@ -8,15 +8,13 @@ class Router
     protected static array $middlewareMap = [];
     protected static string $lastRoute = '';
 
-    // تسجيل مسار GET
     public static function get(string $path, $callback): self 
     {
         self::$routes['GET'][$path] = $callback;
         self::$lastRoute = 'GET:' . $path;
-        return new self(); // عشان نقدر نعمل Chaining مثل ->middleware()
+        return new self(); 
     }
 
-    // تسجيل مسار POST
     public static function post(string $path, $callback): self 
     {
         self::$routes['POST'][$path] = $callback;
@@ -24,7 +22,6 @@ class Router
         return new self();
     }
 
-    // ربط ميديلاوير بالمسار الأخير المكتوب
     public function middleware(string $middlewareClass): self 
     {
         self::$middlewareMap[self::$lastRoute][] = $middlewareClass;
@@ -39,12 +36,10 @@ class Router
 
         if (isset(self::$routes[$method][$path])) {
             
-            // 1. تشغيل الـ Middlewares المرتبطة بالمسار ده أولاً (إن وجدت)
             if (isset(self::$middlewareMap[$routeKey])) {
                 foreach (self::$middlewareMap[$routeKey] as $middlewareClass) {
                     if (class_exists($middlewareClass)) {
                         $middlewareInstance = new $middlewareClass();
-                        // تشغيل الـ Middleware
                         $middlewareInstance->handle();
                     }
                 }
@@ -52,7 +47,6 @@ class Router
 
             $callback = self::$routes[$method][$path];
 
-            // 2. تشغيل الـ Controller أو الـ Closure بعد تخطي الحماية بنجاح
             if (is_callable($callback)) {
                 echo call_user_func($callback);
                 return;

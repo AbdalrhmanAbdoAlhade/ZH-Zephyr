@@ -1,6 +1,5 @@
 <?php
 
-// 1. استدعاء الـ Autoloader والـ env
 require_once __DIR__ . '/vendor/autoload.php';
 \Core\DotEnv::load(__DIR__);
 
@@ -26,7 +25,6 @@ switch ($command) {
         break;
 }
 
-// دالة إنشاء قاعدة البيانات (ديناميكية بالكامل من الـ .env)
 function createDatabase() {
     $host = env('DB_HOST', 'localhost');
     $user = env('DB_USER', 'root');
@@ -49,7 +47,6 @@ function createDatabase() {
     }
 }
 
-// دالة الـ Migration العامة والديناميكية
 function migrateTables() {
     $migrationsDir = __DIR__ . '/database/migrations';
 
@@ -57,7 +54,6 @@ function migrateTables() {
         die("❌ Error: Migrations directory [database/migrations/] not found.\n");
     }
 
-    // جلب كل ملفات الـ .sql وترتيبها أبجدياً
     $files = glob($migrationsDir . '/*.sql');
 
     if (empty($files)) {
@@ -73,7 +69,6 @@ function migrateTables() {
         echo "Migrating: {$fileName} ... ";
 
         try {
-            // قراءة محتوى ملف الـ SQL
             $sql = file_get_contents($file);
 
             if (trim($sql) === '') {
@@ -81,7 +76,6 @@ function migrateTables() {
                 continue;
             }
 
-            // تنفيذ الـ SQL عبر الـ Core Engine الحامي للبيانات
             \Core\DB::query($sql);
             echo "✔ Success\n";
 
