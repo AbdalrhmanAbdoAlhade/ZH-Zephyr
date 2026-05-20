@@ -1,0 +1,98 @@
+<?php
+
+// 1. استدعاء الـ Autoloader والـ env
+require_once __DIR__ . '/vendor/autoload.php';
+\Core\DotEnv::load(__DIR__);
+
+if (php_sapi_name() !== 'cli') {
+    die('This tool can only be run from the command line.');
+}
+
+$command = $argv[1] ?? null;
+
+switch ($command) {
+    case 'db:create':
+        createDatabase();
+        break;
+
+    case 'db:migrate':
+        migrateTables();
+        break;
+
+    default:
+        echo "Available Commands:\n";
+        echo "  php zh db:create   -> To create the database from .env configs\n";
+        echo "  php zh db:migrate  -> To run all SQL files inside database/migrations/\n";
+        break;
+}
+
+// دالة إنشاء قاعدة البيانات (ديناميكية بالكامل من الـ .env)
+function createDatabase() {
+    $host = env('DB_HOST', 'localhost');
+    $user = env('DB_USER', 'root');
+    $pass = env('DB_PASS', '');
+    $dbname = env('DB_NAME', 'mini_backend_db');
+
+    if (!$dbname) {
+        die("❌ Error: DB_NAME is not defined in your .env file.\n");
+    }
+
+    try {
+        $pdo = new PDO("mysql:host={$host}", $user, $pass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        ]);
+
+        $pdo->exec("CREATE DATABASE IF NOT EXISTS `$dbname` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+        echo "✔ Database [{$dbname}] created or verified successfully!\n";
+    } catch (PDOException $e) {
+        echo "❌ Error creating database: " . $e->getMessage() . "\n";
+    }
+}
+
+// دالة الـ Migration العامة والديناميكية
+function migrateTables() {
+    $migrationsDir = __DIR__ . '/database/migrations';
+
+    if (!is_dir($migrationsDir)) {
+        die("❌ Error: Migrations directory [database/migrations/] not found.\n");
+    }
+
+    // جلب كل ملفات الـ .sql وترتيبها أبجدياً
+    $files = glob($migrationsDir . '/*.sql');
+
+    if (empty($files)) {
+        echo "📭 No migration files (.sql) found to execute.\n";
+        return;
+    }
+
+    echo "🚀 Running Migrations...\n";
+    echo "--------------------------------------------------\n";
+
+    foreach ($files as $file) {
+        $fileName = basename($file);
+        echo "Migrating: {$fileName} ... ";
+
+        try {
+            // قراءة محتوى ملف الـ SQL
+            $sql = file_get_contents($file);
+
+            if (trim($sql) === '') {
+                echo "⚠️ Skipped (Empty File)\n";
+                continue;
+            }
+
+            // تنفيذ الـ SQL عبر الـ Core Engine الحامي للبيانات
+            \Core\DB::query($sql);
+            echo "✔ Success\n";
+
+        } catch (Exception $e) {
+            echo "❌ Failed\n";
+            echo "Error Details: " . $e->getMessage() . "\n";
+            echo "--------------------------------------------------\n";
+            die("❌ Migration process stopped due to an error.\n");
+        }
+    }
+
+    echo "--------------------------------------------------\n";
+    echo "✔ All migrations executed successfully!\n";
+}
