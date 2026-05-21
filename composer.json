@@ -3,11 +3,16 @@
     "description": "A lightweight and high-performance PHP Backend Framework Engine.",
     "type": "project",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Abdalrhman AbdoAlhade",
+            "email": "abdo.king22227@gmail.com"
+        }
+    ],
     "require": {
-        "php": ">=8.2",
-        "firebase/php-jwt": "^7.0"
+        "php": ">=8.2"
     },
-   "autoload": {
+    "autoload": {
         "psr-4": {
             "Core\\": "core/",
             "App\\": "app/"
@@ -15,10 +20,12 @@
         "files": [
             "core/helpers.php"
         ]
-    
     },
-    "config": {
-        "optimize-autoloader": true,
-        "sort-packages": true
-    }
+    "scripts": {
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ]
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }
