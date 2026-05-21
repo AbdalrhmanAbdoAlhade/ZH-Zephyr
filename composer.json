@@ -1,0 +1,24 @@
+{
+    "name": "zh-innovation/mini-backend",
+    "description": "A lightweight and high-performance PHP Backend Framework Engine.",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2",
+        "firebase/php-jwt": "^7.0"
+    },
+   "autoload": {
+        "psr-4": {
+            "Core\\": "core/",
+            "App\\": "app/"
+        },
+        "files": [
+            "core/helpers.php"
+        ]
+    
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}
