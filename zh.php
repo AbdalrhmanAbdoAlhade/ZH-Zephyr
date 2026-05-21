@@ -23,7 +23,7 @@ switch ($command) {
 
     case 'make:controller':
         if (!$argument) {
-            echo "❌ Usage: php zh.php make:controller <ControllerName>\n";
+            echo "Usage: php zh.php make:controller <ControllerName>\n";
             exit(1);
         }
         makeController($argument);
@@ -31,7 +31,7 @@ switch ($command) {
 
     case 'make:model':
         if (!$argument) {
-            echo "❌ Usage: php zh.php make:model <ModelName>\n";
+            echo "Usage: php zh.php make:model <ModelName>\n";
             exit(1);
         }
         makeModel($argument);
@@ -39,7 +39,7 @@ switch ($command) {
 
     case 'make:middleware':
         if (!$argument) {
-            echo "❌ Usage: php zh.php make:middleware <MiddlewareName>\n";
+            echo "Usage: php zh.php make:middleware <MiddlewareName>\n";
             exit(1);
         }
         makeMiddleware($argument);
@@ -47,22 +47,22 @@ switch ($command) {
 
     case 'vendor:publish':
         if (!$argument) {
-            echo "❌ Please specify the package provider class.\n";
+            echo "Please specify the package provider class.\n";
             exit(1);
         }
         $provider = str_replace('/', '\\', $argument);
         if (class_exists($provider) && method_exists($provider, 'boot')) {
             $instance = new $provider();
             $instance->boot();
-            echo "✔ Package assets published successfully!\n";
+            echo "Package assets published successfully!\n";
         } else {
-            echo "❌ Provider class [{$provider}] not found or boot() method missing.\n";
+            echo "Provider class [{$provider}] not found or boot() method missing.\n";
         }
         break;
 
     default:
         echo "\n";
-        echo "  ⚡ ZH Mini-Backend CLI\n";
+        echo "   ZH Mini-Backend CLI\n";
         echo "  ─────────────────────────────────────────\n";
         echo "  Database:\n";
         echo "    php zh.php db:create                  Create database from .env\n";
@@ -91,7 +91,7 @@ function createDatabase(): void
     $dbname = env('DB_NAME', 'mini_backend_db');
 
     if (!$dbname) {
-        die("❌ Error: DB_NAME is not defined in your .env file.\n");
+        die("Error: DB_NAME is not defined in your .env file.\n");
     }
 
     try {
@@ -99,9 +99,9 @@ function createDatabase(): void
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
         ]);
         $pdo->exec("CREATE DATABASE IF NOT EXISTS `$dbname` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-        echo "✔ Database [{$dbname}] created or verified successfully!\n";
+        echo "Database [{$dbname}] created or verified successfully!\n";
     } catch (PDOException $e) {
-        echo "❌ Error creating database: " . $e->getMessage() . "\n";
+        echo "Error creating database: " . $e->getMessage() . "\n";
     }
 }
 
@@ -110,17 +110,17 @@ function migrateTables(): void
     $migrationsDir = __DIR__ . '/database/migrations';
 
     if (!is_dir($migrationsDir)) {
-        die("❌ Error: Migrations directory [database/migrations/] not found.\n");
+        die("Error: Migrations directory [database/migrations/] not found.\n");
     }
 
     $files = glob($migrationsDir . '/*.sql');
 
     if (empty($files)) {
-        echo "📭 No migration files (.sql) found to execute.\n";
+        echo "No migration files (.sql) found to execute.\n";
         return;
     }
 
-    echo "🚀 Running Migrations...\n";
+    echo "Running Migrations...\n";
     echo "──────────────────────────────────────────\n";
 
     foreach ($files as $file) {
@@ -130,21 +130,21 @@ function migrateTables(): void
         try {
             $sql = file_get_contents($file);
             if (trim($sql) === '') {
-                echo "⚠️  Skipped (Empty File)\n";
+                echo "Skipped (Empty File)\n";
                 continue;
             }
             \Core\DB::query($sql);
-            echo "✔ Done\n";
+            echo "Done\n";
         } catch (Exception $e) {
-            echo "❌ Failed\n";
+            echo "Failed\n";
             echo "  Error: " . $e->getMessage() . "\n";
             echo "──────────────────────────────────────────\n";
-            die("❌ Migration stopped due to an error.\n");
+            die("Migration stopped due to an error.\n");
         }
     }
 
     echo "──────────────────────────────────────────\n";
-    echo "✔ All migrations executed successfully!\n";
+    echo "All migrations executed successfully!\n";
 }
 
 // ──────────────────────────────────────────
@@ -153,7 +153,6 @@ function migrateTables(): void
 
 function makeController(string $name): void
 {
-    // Ensure name ends with Controller
     if (!str_ends_with($name, 'Controller')) {
         $name .= 'Controller';
     }
@@ -161,7 +160,7 @@ function makeController(string $name): void
     $path = __DIR__ . "/app/Controllers/{$name}.php";
 
     if (file_exists($path)) {
-        echo "❌ Controller [{$name}] already exists.\n";
+        echo "Controller [{$name}] already exists.\n";
         exit(1);
     }
 
@@ -208,7 +207,7 @@ class {$name} extends Controller
 PHP;
 
     file_put_contents($path, $stub);
-    echo "✔ Controller created: app/Controllers/{$name}.php\n";
+    echo "Controller created: app/Controllers/{$name}.php\n";
 }
 
 function makeModel(string $name): void
@@ -216,7 +215,7 @@ function makeModel(string $name): void
     $path = __DIR__ . "/app/Models/{$name}.php";
 
     if (file_exists($path)) {
-        echo "❌ Model [{$name}] already exists.\n";
+        echo "Model [{$name}] already exists.\n";
         exit(1);
     }
 
@@ -234,7 +233,7 @@ class {$name} extends Model
 PHP;
 
     file_put_contents($path, $stub);
-    echo "✔ Model created: app/Models/{$name}.php\n";
+    echo "Model created: app/Models/{$name}.php\n";
 }
 
 function makeMiddleware(string $name): void
@@ -246,7 +245,7 @@ function makeMiddleware(string $name): void
     $path = __DIR__ . "/app/Middleware/{$name}.php";
 
     if (file_exists($path)) {
-        echo "❌ Middleware [{$name}] already exists.\n";
+        echo "Middleware [{$name}] already exists.\n";
         exit(1);
     }
 
@@ -262,11 +261,10 @@ class {$name}
     public function handle(): void
     {
         // Add your middleware logic here
-        // Call Response::unauthorized() or Response::forbidden() to block the request
     }
 }
 PHP;
 
     file_put_contents($path, $stub);
-    echo "✔ Middleware created: app/Middleware/{$name}.php\n";
+    echo "Middleware created: app/Middleware/{$name}.php\n";
 }
