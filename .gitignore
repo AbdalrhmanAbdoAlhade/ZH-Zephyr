@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Dependencies
 /vendor/
 
@@ -19,3 +20,9 @@ Thumbs.db
 # Cache
 /storage/cache/
 *.cache
+=======
+/vendor/
+.env
+.idea/
+.vscode/
+>>>>>>> 1677249db46651c02f284a34ba822aec3bee5818

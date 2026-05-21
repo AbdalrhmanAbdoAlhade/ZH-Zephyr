@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="ar" dir="ltr">
 <head>
@@ -250,4 +251,258 @@
     });
 </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ZH Zephyr | PHP Performance 3D Space</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,500;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #050510; color: #ffffff; }
+        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; outline: none; }
+        .hero { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 1.5rem; backdrop-filter: blur(3px); pointer-events: none; }
+        .content-card { pointer-events: auto; background: rgba(12, 12, 30, 0.65); backdrop-filter: blur(14px); border-radius: 2.5rem; padding: 2rem 2.8rem; border: 1px solid rgba(0, 255, 255, 0.25); box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(0, 255, 255, 0.2); transition: transform 0.3s ease, box-shadow 0.3s ease; max-width: 850px; width: 100%; }
+        .content-card:hover { transform: translateY(-5px); box-shadow: 0 28px 45px rgba(0,0,0,0.5), 0 0 30px rgba(0, 255, 255, 0.4); border-color: rgba(0, 255, 200, 0.6); }
+        .name { font-size: 3.6rem; font-weight: 800; letter-spacing: -0.02em; background: linear-gradient(135deg, #FFFFFF, #F0A3FF, #5DE2FF); background-clip: text; -webkit-background-clip: text; color: transparent; text-shadow: 0 0 18px rgba(0,200,255,0.6); margin-bottom: 0.5rem; line-height: 1.2; }
+        .tagline { font-size: 1rem; font-weight: 500; color: #c6e9ff; letter-spacing: 0.5px; margin-bottom: 2rem; border-bottom: 1px dashed rgba(0, 230, 200, 0.5); display: inline-block; padding-bottom: 0.6rem; background: rgba(0,0,0,0.3); padding-left: 1rem; padding-right: 1rem; border-radius: 40px; backdrop-filter: blur(2px); }
+        .links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.2rem; margin-top: 1.8rem; }
+        .btn-link { display: inline-flex; align-items: center; gap: 0.75rem; background: rgba(20, 25, 55, 0.7); backdrop-filter: blur(4px); padding: 0.85rem 1.8rem; border-radius: 3rem; font-weight: 600; font-size: 1rem; text-decoration: none; color: #f0f9ff; border: 1px solid rgba(0, 255, 255, 0.3); transition: all 0.25s ease; letter-spacing: 0.3px; box-shadow: 0 5px 12px rgba(0,0,0,0.2); }
+        .btn-link i { font-size: 1.2rem; transition: transform 0.2s; }
+        .btn-link:hover { background: rgba(0, 180, 230, 0.25); border-color: #0ff; transform: translateY(-3px); box-shadow: 0 12px 22px rgba(0, 200, 255, 0.2); color: white; }
+        .btn-link:hover i { transform: scale(1.1); }
+        .credit-name { margin-top: 1.4rem; font-size: 0.85rem; font-weight: 500; color: #9cc9ff; background: rgba(0,0,0,0.4); display: inline-block; padding: 0.4rem 1.2rem; border-radius: 50px; backdrop-filter: blur(4px); letter-spacing: 0.8px; border: 1px solid rgba(0,255,200,0.2); }
+        .credit-name i { margin-right: 6px; font-size: 0.8rem; }
+        @media (max-width: 650px) { .name { font-size: 2.4rem; } .btn-link { padding: 0.6rem 1.2rem; font-size: 0.85rem; } .tagline { font-size: 0.75rem; } .credit-name { font-size: 0.7rem; } }
+        @media (max-width: 480px) { .name { font-size: 2rem; } .btn-link { padding: 0.5rem 1rem; font-size: 0.75rem; } }
+        .glow-text { animation: textPulse 3s infinite alternate; }
+        @keyframes textPulse { 0% { text-shadow: 0 0 5px rgba(0,230,255,0.3); } 100% { text-shadow: 0 0 28px rgba(0,230,255,0.7); } }
+        ::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body>
+<div id="canvas-container"></div>
+<div class="hero">
+    <div class="content-card">
+        <h1 class="name glow-text">ZH Zephyr</h1>
+        <div class="tagline"><i class="fas fa-code"></i> Pure PHP, Zero Dependencies, Shared Hosting, High Performance</div>
+        <div class="links">
+            <a href="https://github.com/AbdalrhmanAbdoAlhade" target="_blank" class="btn-link"><i class="fab fa-github"></i> GitHub</a>
+            <a href="https://abdalrhman-abdo-alhade.vercel.app/" target="_blank" class="btn-link"><i class="fas fa-globe"></i> Vercel</a>
+            <a href="https://wa.me/201023402756" target="_blank" class="btn-link"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        </div>
+        <div class="credit-name"><i class="fas fa-cube"></i> Abdalrhman AbdoAlhade</div>
+    </div>
+</div>
+
+<script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+        }
+    }
+</script>
+
+<script type="module">
+    import * as THREE from 'three';
+
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050510);
+    scene.fog = new THREE.FogExp2(0x050510, 0.012);
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 1.2, 8);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
+    container.appendChild(renderer.domElement);
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0x22223b);
+    scene.add(ambientLight);
+    const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    mainLight.position.set(3, 5, 2);
+    scene.add(mainLight);
+    const fillLight = new THREE.PointLight(0x4466cc, 0.6);
+    fillLight.position.set(0, -2, 1);
+    scene.add(fillLight);
+    const rimLight = new THREE.PointLight(0x44ccff, 0.8);
+    rimLight.position.set(1.5, 2, -3);
+    scene.add(rimLight);
+    const colorLight = new THREE.PointLight(0xff44aa, 0.5);
+    colorLight.position.set(-2, 1, -4);
+    scene.add(colorLight);
+
+    // Stars
+    const starGeometry = new THREE.BufferGeometry();
+    const starCount = 1400;
+    const starPositions = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount; i++) {
+        starPositions[i*3] = (Math.random() - 0.5) * 200;
+        starPositions[i*3+1] = (Math.random() - 0.5) * 80;
+        starPositions[i*3+2] = (Math.random() - 0.5) * 80 - 30;
+    }
+    starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+    const stars = new THREE.Points(starGeometry, new THREE.PointsMaterial({ color: 0xaaffdd, size: 0.12, transparent: true, opacity: 0.6 }));
+    scene.add(stars);
+
+    // Code snippets - No raw "&lt;?" or "?&gt;" are used as plain text, only safe strings
+    const codeSnippets = [
+        "echo '3D World';", "composer dump-autoload", "function fast() { return true; }", "mysqli_connect()",
+        "header('Content-Type: application/json');", "define('PERF', true);", "foreach($data as $row)", "try { $php = 'awesome'; }",
+        "phpinfo(); // shared hosting", "Zero Dependencies FTW", "namespace Zephyr\\Core;", "SELECT * FROM speed",
+        "$response = file_get_contents('php://input');", "class Router { public function match(){} }", "/* high performance */",
+        "error_reporting(E_ALL);", "session_start();", "Hello World via PHP", "array_map('trim', $data)", "preg_match('/speed/i', $code)",
+        "new PDO('mysql:host=localhost;dbname=perf')", "Redis::lpush()", "opcache_reset();", "// Zero config",
+        "return Response::json($payload);", "Middleware::handle()", "PHP 8.3 + JIT"
+    ];
+
+    function createCodeTexture(codeText) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 256;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#0c1126';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = '#2affdd';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(8, 8, canvas.width - 16, canvas.height - 16);
+        const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        grad.addColorStop(0, 'rgba(20, 30, 70, 0.7)');
+        grad.addColorStop(1, 'rgba(10, 15, 40, 0.8)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(10, 10, canvas.width - 20, canvas.height - 20);
+        ctx.font = 'bold 20px "Fira Code", "JetBrains Mono", monospace';
+        let displayText = codeText.length > 34 ? codeText.slice(0, 32) + '..' : codeText;
+        ctx.fillStyle = '#d6f0ff';
+        ctx.font = '500 21px "JetBrains Mono", "Fira Code", monospace';
+        ctx.fillText(displayText, 40, canvas.height/2 + 8);
+        ctx.font = '14px monospace';
+        ctx.fillStyle = '#88aaff';
+        ctx.fillText("⚡ PHP 8", 40, canvas.height - 28);
+        ctx.fillStyle = '#55ddff';
+        ctx.fillText("{}", canvas.width - 60, canvas.height - 20);
+        ctx.beginPath();
+        ctx.moveTo(30, canvas.height - 40);
+        ctx.lineTo(canvas.width - 40, canvas.height - 40);
+        ctx.strokeStyle = '#0ff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        return new THREE.CanvasTexture(canvas);
+    }
+
+    const codeCards = [];
+    const cardsGroup = new THREE.Group();
+    scene.add(cardsGroup);
+    const cardWidth = 1.9, cardHeight = 0.95, radius = 3.6, cardsCount = 24;
+    for (let i = 0; i < cardsCount; i++) {
+        const texture = createCodeTexture(codeSnippets[i % codeSnippets.length]);
+        const material = new THREE.MeshStandardMaterial({ map: texture, roughness: 0.28, metalness: 0.65, emissive: new THREE.Color(0x114466), emissiveIntensity: 0.2, side: THREE.DoubleSide });
+        const plane = new THREE.Mesh(new THREE.PlaneGeometry(cardWidth, cardHeight), material);
+        const angle = (i / cardsCount) * Math.PI * 2;
+        const yOffset = Math.sin(angle * 2) * 0.8 + (Math.random() - 0.5) * 0.5;
+        plane.position.set(Math.cos(angle) * radius, yOffset + 0.2, Math.sin(angle) * radius);
+        plane.userData = { originalY: plane.position.y, floatAmp: 0.08 + Math.random() * 0.07 };
+        cardsGroup.add(plane);
+        codeCards.push(plane);
+    }
+
+    // Floating cubes with safe symbols (no raw <?)
+    const extraElements = [];
+    const extraCount = 40;
+    const symbols = ["&lt;?", "?&gt;", "PHP", "[]", "=>", "&&", "||", "⚡", "{}", "$var"];
+    for (let i = 0; i < extraCount; i++) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 128;
+        canvas.height = 128;
+        const tCtx = canvas.getContext('2d');
+        tCtx.fillStyle = '#071126';
+        tCtx.fillRect(0, 0, 128, 128);
+        tCtx.fillStyle = '#3effdd';
+        tCtx.font = 'bold 30px monospace';
+        tCtx.fillText(symbols[i % symbols.length], 35, 75);
+        tCtx.strokeStyle = '#0ff';
+        tCtx.strokeRect(4, 4, 120, 120);
+        const tex = new THREE.CanvasTexture(canvas);
+        const cube = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.42, 0.42), new THREE.MeshStandardMaterial({ map: tex, emissive: '#2266aa', emissiveIntensity: 0.3 }));
+        const r = 2.2 + Math.random() * 1.4;
+        const ang = Math.random() * Math.PI * 2;
+        const yLev = (Math.random() - 0.5) * 2.4;
+        cube.position.set(Math.cos(ang) * r, yLev, Math.sin(ang) * r);
+        cube.userData = { angle: ang, radius: r, yBase: yLev, spinSpeed: 0.01 };
+        cardsGroup.add(cube);
+        extraElements.push(cube);
+    }
+
+    // Decorative knot
+    const knot = new THREE.Mesh(new THREE.TorusKnotGeometry(1.1, 0.23, 128, 16, 3, 4), new THREE.MeshStandardMaterial({ color: 0x22ccff, emissive: 0x1166aa, emissiveIntensity: 0.5, transparent: true, opacity: 0.25 }));
+    knot.position.set(0, 0.5, -1.4);
+    knot.scale.set(0.9, 0.9, 0.9);
+    scene.add(knot);
+
+    // Dust particles
+    const dustGeo = new THREE.BufferGeometry();
+    const dustCount = 900;
+    const dustPositions = new Float32Array(dustCount * 3);
+    for (let i = 0; i < dustCount; i++) {
+        dustPositions[i*3] = (Math.random() - 0.5) * 12;
+        dustPositions[i*3+1] = (Math.random() - 0.5) * 6;
+        dustPositions[i*3+2] = (Math.random() - 0.5) * 8 - 2;
+    }
+    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
+    const dustPoints = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0x88ddff, size: 0.035, transparent: true, opacity: 0.5 }));
+    scene.add(dustPoints);
+
+    // Mouse interaction
+    let targetRotationX = 0, targetRotationY = 0;
+    window.addEventListener('mousemove', (event) => {
+        targetRotationY = ((event.clientX / window.innerWidth) * 2 - 1) * 0.2;
+        targetRotationX = ((event.clientY / window.innerHeight) * 2 - 1) * 0.1;
+    });
+
+    function updateCardsFaceCamera() { codeCards.forEach(card => card.lookAt(camera.position)); }
+    function floatCards(t) {
+        codeCards.forEach((card, idx) => {
+            if (card.userData) card.position.y = card.userData.originalY + Math.sin(t * 1.8 + idx) * card.userData.floatAmp;
+        });
+        extraElements.forEach((cube, idx) => {
+            cube.rotation.x += cube.userData.spinSpeed;
+            cube.rotation.y += cube.userData.spinSpeed * 0.7;
+            cube.userData.angle = (cube.userData.angle + 0.006) % (Math.PI * 2);
+            cube.position.x = Math.cos(cube.userData.angle) * cube.userData.radius;
+            cube.position.z = Math.sin(cube.userData.angle) * cube.userData.radius;
+            cube.position.y = cube.userData.yBase + Math.sin(t * 1.2 + idx) * 0.07;
+        });
+    }
+
+    function animate() {
+        const t = performance.now() / 1000;
+        floatCards(t);
+        updateCardsFaceCamera();
+        stars.rotation.y += 0.0005;
+        dustPoints.rotation.y += 0.002;
+        knot.rotation.x = t * 0.2;
+        knot.rotation.y = t * 0.35;
+        colorLight.intensity = 0.6 + Math.sin(t * 1.7) * 0.2;
+        rimLight.intensity = 0.7 + Math.sin(t * 1.2) * 0.2;
+        camera.position.x += (targetRotationY * 0.5 - camera.position.x) * 0.05;
+        camera.position.y += (targetRotationX * 0.3 + 1.2 - camera.position.y) * 0.05;
+        camera.lookAt(0, 0.6, 0);
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+</script>
+</body>
+>>>>>>> 1677249db46651c02f284a34ba822aec3bee5818
 </html>
