@@ -52,5 +52,4 @@ class DB
     }
 }
 
-// Alias — كل الأماكن اللي بتستخدم \Core\Database هتشتغل عادي
 class_alias(DB::class, 'Core\Database');
