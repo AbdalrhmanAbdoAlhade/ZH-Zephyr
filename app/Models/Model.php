@@ -1,90 +1,70 @@
-<<<<<<< HEAD
 <?php
 
 namespace App\Models;
 
 use Core\DB;
 
-class Model 
+class Model
 {
     protected static string $table;
 
-    // دالة ديناميكية لمعرفة اسم الجدول تلقائياً إذا لم يتم تحديده
-    protected static function getTableName(): string 
+    protected static function getTableName(): string
     {
         if (isset(static::$table)) {
             return static::$table;
         }
-        // لو اسم الكلاس Product، الجدول هيبقى products
         $className = (new \ReflectionClass(static::class))->getShortName();
         return strtolower($className) . 's';
     }
 
-    // جلب كل البيانات: Product::all()
-    public static function all(): array 
+    public static function all(): array
     {
-        $table = self::getTableName();
-        $stmt = DB::query("SELECT * FROM {$table} ORDER BY id DESC");
-        return $stmt->fetchAll();
+        $table = static::getTableName();
+        return DB::query("SELECT * FROM {$table} ORDER BY id DESC")->fetchAll();
     }
 
-    // إدخال بيانات جديدة ديناميكياً: Product::create($data)
-    public static function create(array $data): array 
+    public static function find(int $id): array|false
     {
-        $table = self::getTableName();
-        $fields = implode(', ', array_keys($data));
+        $table = static::getTableName();
+        return DB::query("SELECT * FROM {$table} WHERE id = :id LIMIT 1", ['id' => $id])->fetch();
+    }
+
+    public static function where(string $column, mixed $value): array
+    {
+        $table = static::getTableName();
+        return DB::query("SELECT * FROM {$table} WHERE {$column} = :value", ['value' => $value])->fetchAll();
+    }
+
+    public static function create(array $data): array
+    {
+        $table        = static::getTableName();
+        $fields       = implode(', ', array_keys($data));
         $placeholders = ':' . implode(', :', array_keys($data));
 
-        $sql = "INSERT INTO {$table} ({$fields}) VALUES ({$placeholders})";
-        DB::query($sql, $data);
+        DB::query("INSERT INTO {$table} ({$fields}) VALUES ({$placeholders})", $data);
 
-        // إرجاع البيانات اللي تم إدخالها مع الـ ID الجديد
         $data['id'] = DB::connect()->lastInsertId();
         return $data;
     }
-=======
-<?php
 
-namespace App\Models;
-
-use Core\DB;
-
-class Model 
-{
-    protected static string $table;
-
-    // دالة ديناميكية لمعرفة اسم الجدول تلقائياً إذا لم يتم تحديده
-    protected static function getTableName(): string 
+    public static function update(int $id, array $data): bool
     {
-        if (isset(static::$table)) {
-            return static::$table;
-        }
-        // لو اسم الكلاس Product، الجدول هيبقى products
-        $className = (new \ReflectionClass(static::class))->getShortName();
-        return strtolower($className) . 's';
+        $table  = static::getTableName();
+        $fields = implode(', ', array_map(fn($k) => "{$k} = :{$k}", array_keys($data)));
+
+        $data['id'] = $id;
+        return DB::query("UPDATE {$table} SET {$fields} WHERE id = :id", $data)->rowCount() > 0;
     }
 
-    // جلب كل البيانات: Product::all()
-    public static function all(): array 
+    public static function delete(int $id): bool
     {
-        $table = self::getTableName();
-        $stmt = DB::query("SELECT * FROM {$table} ORDER BY id DESC");
-        return $stmt->fetchAll();
+        $table = static::getTableName();
+        return DB::query("DELETE FROM {$table} WHERE id = :id", ['id' => $id])->rowCount() > 0;
     }
 
-    // إدخال بيانات جديدة ديناميكياً: Product::create($data)
-    public static function create(array $data): array 
+    public static function count(): int
     {
-        $table = self::getTableName();
-        $fields = implode(', ', array_keys($data));
-        $placeholders = ':' . implode(', :', array_keys($data));
-
-        $sql = "INSERT INTO {$table} ({$fields}) VALUES ({$placeholders})";
-        DB::query($sql, $data);
-
-        // إرجاع البيانات اللي تم إدخالها مع الـ ID الجديد
-        $data['id'] = DB::connect()->lastInsertId();
-        return $data;
+        $table = static::getTableName();
+        return (int) DB::query("SELECT COUNT(*) FROM {$table}")->fetchColumn();
     }
->>>>>>> 1677249db46651c02f284a34ba822aec3bee5818
 }

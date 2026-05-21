@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
     "name": "zh-innovation/mini-backend",
     "description": "A lightweight and high-performance PHP Backend Framework Engine.",
@@ -23,28 +22,3 @@
         "sort-packages": true
     }
 }
-=======
-{
-    "name": "zh-innovation/mini-backend",
-    "description": "A lightweight and high-performance PHP Backend Framework Engine.",
-    "type": "project",
-    "license": "MIT",
-    "require": {
-        "php": ">=8.2"
-    },
-   "autoload": {
-        "psr-4": {
-            "Core\\": "core/",
-            "App\\": "app/"
-        },
-        "files": [
-            "core/helpers.php"
-        ]
-    
-    },
-    "config": {
-        "optimize-autoloader": true,
-        "sort-packages": true
-    }
-}
->>>>>>> 1677249db46651c02f284a34ba822aec3bee5818
