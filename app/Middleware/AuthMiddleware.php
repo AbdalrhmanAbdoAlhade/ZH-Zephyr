@@ -3,6 +3,7 @@
 namespace App\Middleware;
 
 use Core\Middleware;
+use Core\JwtAuth;
 use Core\Response;
 
 class AuthMiddleware implements Middleware
@@ -12,27 +13,28 @@ class AuthMiddleware implements Middleware
         $headers    = getallheaders();
         $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';
 
-        $secretToken = env('APP_SECRET');
-
-        if (!$secretToken) {
+        if (!preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
             Response::json([
                 "status"  => false,
-                "message" => "Server misconfiguration: APP_SECRET is not set."
-            ], 500);
+                "message" => "Unauthorized. Bearer token is missing."
+            ], 401);
             return false;
         }
 
-        if (preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            if (hash_equals($secretToken, $matches[1])) {
-                return true;
-            }
+        $token   = $matches[1];
+        $payload = JwtAuth::verify($token);
+
+        if (!$payload) {
+            Response::json([
+                "status"  => false,
+                "message" => "Unauthorized. Token is invalid or expired."
+            ], 401);
+            return false;
         }
 
-        Response::json([
-            "status"  => false,
-            "message" => "Unauthorized access. Invalid or missing Bearer Token."
-        ], 401);
+        // Inject payload into $_REQUEST so controllers can access it
+        $_REQUEST['auth'] = $payload;
 
-        return false;
+        return true;
     }
 }
