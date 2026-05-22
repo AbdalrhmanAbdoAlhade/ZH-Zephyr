@@ -1,10 +1,38 @@
 <?php
 
 use Core\Router;
-use App\Controllers\ProductController;
+use Core\Response;
 use App\Middleware\AuthMiddleware;
 
-Router::get('/api/v1/products', [ProductController::class, 'index']);
+// ──────────────────────────────────────────
+// Health Check
+// ──────────────────────────────────────────
+Router::get('/api/health', function () {
+    Response::success([
+        'version' => '1.0.0',
+        'php'     => PHP_VERSION,
+    ], 'ZH Zephyr is running');
+});
 
-Router::post('/api/v1/products', [ProductController::class, 'store'])
-      ->middleware(AuthMiddleware::class);
+// ──────────────────────────────────────────
+// Public Routes
+// ──────────────────────────────────────────
+Router::post('/api/auth/login', [\App\Controllers\AuthController::class, 'login']);
+
+// ──────────────────────────────────────────
+// Protected Routes — require Bearer token
+// ──────────────────────────────────────────
+Router::get('/api/users', [\App\Controllers\UserController::class, 'index'])
+    ->middleware(AuthMiddleware::class);
+
+Router::get('/api/users/{id}', [\App\Controllers\UserController::class, 'show'])
+    ->middleware(AuthMiddleware::class);
+
+Router::post('/api/users', [\App\Controllers\UserController::class, 'store'])
+    ->middleware(AuthMiddleware::class);
+
+Router::put('/api/users/{id}', [\App\Controllers\UserController::class, 'update'])
+    ->middleware(AuthMiddleware::class);
+
+Router::delete('/api/users/{id}', [\App\Controllers\UserController::class, 'destroy'])
+    ->middleware(AuthMiddleware::class);
