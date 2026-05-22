@@ -36,3 +36,27 @@ Router::put('/api/users/{id}', [\App\Controllers\UserController::class, 'update'
 
 Router::delete('/api/users/{id}', [\App\Controllers\UserController::class, 'destroy'])
     ->middleware(AuthMiddleware::class);
+
+// ──────────────────────────────────────────
+// Products Routes
+// ──────────────────────────────────────────
+Router::get('/api/products', [\App\Controllers\ProductController::class, 'index']);
+
+Router::get('/api/products/{id}', [\App\Controllers\ProductController::class, 'show']);
+
+Router::post('/api/products', [\App\Controllers\ProductController::class, 'store'])
+    ->middleware(AuthMiddleware::class);
+
+Router::put('/api/products/{id}', [\App\Controllers\ProductController::class, 'update'])
+    ->middleware(AuthMiddleware::class);
+
+Router::delete('/api/products/{id}', [\App\Controllers\ProductController::class, 'destroy'])
+    ->middleware(AuthMiddleware::class);
+
+// ──────────────────────────────────────────
+// Categories Routes
+// ──────────────────────────────────────────
+Router::get('/api/categories', [\App\Controllers\CategoryController::class, 'index']);
+
+Router::post('/api/categories', [\App\Controllers\CategoryController::class, 'store'])
+    ->middleware(AuthMiddleware::class);

@@ -254,13 +254,15 @@ function makeMiddleware(string $name): void
 
 namespace App\Middleware;
 
-use Core\Response;
+use Core\Middleware;
 
-class {$name}
+class {$name} implements Middleware
 {
-    public function handle(): void
+    public function handle(): bool
     {
-        // Add your middleware logic here
+        // TODO: Add your middleware logic here
+        // Return true to continue, false to abort
+        return true;
     }
 }
 PHP;

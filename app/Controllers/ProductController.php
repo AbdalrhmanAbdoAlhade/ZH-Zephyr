@@ -16,20 +16,25 @@ class ProductController
     }
 
     // تخزين منتج جديد
-    public function store(Request $request): void
-    {
-        $data = $request->body();
-
-        // تحقق سريع
-        if (empty($data['name']) || empty($data['price'])) {
-            Response::json(["message" => "Name and Price are required!"], 400);
-        }
-
-        $product = Product::create([
-            'name'  => $data['name'],
-            'price' => $data['price']
-        ]);
-
-        Response::json($product, 201);
+public function store(Request $request): void
+{
+    $data = $request->body();
+    
+    $errors = Validator::validate($data, [
+        'name'  => 'required|string|min:3|max:255',
+        'price' => 'required|numeric|min:0.01',
+    ]);
+    
+    if ($errors) {
+        Response::validationError($errors);
+        return;
     }
+    
+    try {
+        $product = Product::create($data);
+        Response::success($product, 'Product created', 201);
+    } catch (Exception $e) {
+        Response::error('Failed to create product', 500);
+    }
+}
 }

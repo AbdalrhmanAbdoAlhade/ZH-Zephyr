@@ -29,10 +29,76 @@ class Model
         return DB::query("SELECT * FROM {$table} WHERE id = :id LIMIT 1", ['id' => $id])->fetch();
     }
 
+  
     public static function where(string $column, mixed $value): array
     {
         $table = static::getTableName();
+        
+        // Validate column to prevent SQL injection
+        if (!static::validateColumn($column)) {
+            throw new \InvalidArgumentException("Column [{$column}] is not allowed");
+        }
+
         return DB::query("SELECT * FROM {$table} WHERE {$column} = :value", ['value' => $value])->fetchAll();
+    }
+
+    /**
+     * Get all allowed columns for this model
+     * Returns all columns if not explicitly defined
+     */
+    protected static function getAllowedColumns(): array
+    {
+        // You can override in child models to restrict columns
+        // Example: return ['id', 'name', 'email', 'created_at', 'updated_at'];
+        try {
+            $table = static::getTableName();
+            $columns = DB::query("SHOW COLUMNS FROM {$table}")->fetchAll();
+            return array_map(fn($col) => $col['Field'], $columns);
+        } catch (\Exception) {
+            return [];
+        }
+    }
+
+    /**
+     * Validate column name against whitelist
+     */
+    protected static function validateColumn(string $column): bool
+    {
+        $allowed = static::getAllowedColumns();
+        return in_array($column, $allowed, true);
+    }
+
+    /**
+     * Soft delete - sets deleted_at timestamp
+     */
+    public static function softDelete(int $id): bool
+    {
+        $table = static::getTableName();
+        return DB::query(
+            "UPDATE {$table} SET deleted_at = NOW() WHERE id = :id",
+            ['id' => $id]
+        )->rowCount() > 0;
+    }
+
+    /**
+     * Get only non-deleted records (soft deletes)
+     */
+    public static function notDeleted(): array
+    {
+        $table = static::getTableName();
+        return DB::query("SELECT * FROM {$table} WHERE deleted_at IS NULL ORDER BY id DESC")->fetchAll();
+    }
+
+    /**
+     * Restore soft-deleted record
+     */
+    public static function restore(int $id): bool
+    {
+        $table = static::getTableName();
+        return DB::query(
+            "UPDATE {$table} SET deleted_at = NULL WHERE id = :id",
+            ['id' => $id]
+        )->rowCount() > 0;
     }
 
     public static function create(array $data): array
