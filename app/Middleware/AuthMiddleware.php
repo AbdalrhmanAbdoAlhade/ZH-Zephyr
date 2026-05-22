@@ -5,26 +5,34 @@ namespace App\Middleware;
 use Core\Middleware;
 use Core\Response;
 
-class AuthMiddleware implements Middleware 
+class AuthMiddleware implements Middleware
 {
-    public function handle(): bool 
+    public function handle(): bool
     {
-        $headers = getallheaders();
+        $headers    = getallheaders();
         $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';
 
-        $secretToken = "ZH-Innovation-Secure-Token-2026";
+        $secretToken = env('APP_SECRET');
+
+        if (!$secretToken) {
+            Response::json([
+                "status"  => false,
+                "message" => "Server misconfiguration: APP_SECRET is not set."
+            ], 500);
+            return false;
+        }
 
         if (preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            if ($matches[1] === $secretToken) {
-                return true; 
+            if (hash_equals($secretToken, $matches[1])) {
+                return true;
             }
         }
 
         Response::json([
-            "status" => false,
+            "status"  => false,
             "message" => "Unauthorized access. Invalid or missing Bearer Token."
         ], 401);
 
-        return false; 
+        return false;
     }
 }
