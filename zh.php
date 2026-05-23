@@ -65,23 +65,73 @@ switch ($command) {
         break;
 
     default:
+        $w = 60; // total width inside the border
+
+        $line  = fn(string $s = '') => "  │ " . str_pad($s, $w) . " │\n";
+        $title = fn(string $s) => "  │ " . str_pad("  " . $s, $w) . " │\n";
+        $cmd   = fn(string $c, string $d) =>
+                    "  │    " . "\033[32m" . str_pad($c, 34) . "\033[0m" .
+                    "\033[90m" . str_pad($d, $w - 38) . "\033[0m" . "   │\n";
+        $tip   = fn(string $s) =>
+                    "  │  \033[33m⚡\033[0m \033[90m" . str_pad($s, $w - 4) . "\033[0m │\n";
+        $top   = "  ┌" . str_repeat('─', $w + 2) . "┐\n";
+        $sep   = "  ├" . str_repeat('─', $w + 2) . "┤\n";
+        $bot   = "  └" . str_repeat('─', $w + 2) . "┘\n";
+
         echo "\n";
-        echo "   ZH Mini-Backend CLI\n";
-        echo "  ─────────────────────────────────────────\n";
-        echo "  Database:\n";
-        echo "    php zh.php db:create                  Create database from .env\n";
-        echo "    php zh.php db:migrate                 Run all SQL migration files\n";
-        echo "\n";
-        echo "  Scaffolding:\n";
-        echo "    php zh.php make:controller <Name>     Create a new Controller\n";
-        echo "    php zh.php make:model <Name>          Create a new Model\n";
-        echo "    php zh.php make:middleware <Name>     Create a new Middleware\n";
-        echo "\n";
-        echo "  Security:\n";
-        echo "    php zh.php generate:secret             Generate & set JWT secrets in .env\n";
-        echo "\n";
-        echo "  Packages:\n";
-        echo "    php zh.php vendor:publish <Provider>  Publish package assets\n";
+        echo $top;
+        echo "  │ " . "\033[36m" . str_pad("  ⚙  ZH Mini-Backend CLI  —  v1.0.0", $w) . "\033[0m" . " │\n";
+        echo "  │ " . "\033[90m" . str_pad("  Your personal artisan-style toolkit", $w) . "\033[0m" . " │\n";
+        echo $sep;
+
+        // ── Database
+        echo $title("🗄  Database");
+        echo $line();
+        echo $cmd("db:create",  "Create the database defined in .env");
+        echo $cmd("db:migrate", "Run all .sql files in database/migrations/");
+        echo $line();
+        echo $tip("Always run db:create before db:migrate on a fresh setup.");
+        echo $line();
+        echo $sep;
+
+        // ── Scaffolding
+        echo $title("🏗  Scaffolding");
+        echo $line();
+        echo $cmd("make:controller <Name>", "Generate a new Controller class");
+        echo $cmd("make:model <Name>",      "Generate a new Model class");
+        echo $cmd("make:middleware <Name>", "Generate a new Middleware class");
+        echo $line();
+        echo $tip("Names auto-suffix: User → UserController / UserMiddleware.");
+        echo $line();
+        echo $sep;
+
+        // ── Security
+        echo $title("🔐  Security");
+        echo $line();
+        echo $cmd("generate:secret",         "Generate JWT_SECRET & APP_SECRET in .env");
+        echo $cmd("generate:secret --force", "Regenerate secrets even if already set");
+        echo $line();
+        echo $tip("Run this once after cloning the project on a new machine.");
+        echo $line();
+        echo $sep;
+
+        // ── Packages
+        echo $title("📦  Packages");
+        echo $line();
+        echo $cmd("vendor:publish <Provider>", "Publish assets from a package provider");
+        echo $line();
+        echo $sep;
+
+        // ── Quick-start guide
+        echo $title("🚀  Quick Start (new project)");
+        echo $line();
+        echo "  │  " . "\033[90m" . str_pad("1.  cp .env.example .env", $w - 1) . "\033[0m" . "│\n";
+        echo "  │  " . "\033[90m" . str_pad("2.  php zh.php generate:secret", $w - 1) . "\033[0m" . "│\n";
+        echo "  │  " . "\033[90m" . str_pad("3.  php zh.php db:create", $w - 1) . "\033[0m" . "│\n";
+        echo "  │  " . "\033[90m" . str_pad("4.  php zh.php db:migrate", $w - 1) . "\033[0m" . "│\n";
+        echo "  │  " . "\033[90m" . str_pad("5.  php -S localhost:8000 -t public", $w - 1) . "\033[0m" . "│\n";
+        echo $line();
+        echo $bot;
         echo "\n";
         break;
 }
