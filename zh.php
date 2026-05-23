@@ -45,6 +45,10 @@ switch ($command) {
         makeMiddleware($argument);
         break;
 
+    case 'generate:secret':
+        generateSecret();
+        break;
+
     case 'vendor:publish':
         if (!$argument) {
             echo "Please specify the package provider class.\n";
@@ -73,6 +77,9 @@ switch ($command) {
         echo "    php zh.php make:model <Name>          Create a new Model\n";
         echo "    php zh.php make:middleware <Name>     Create a new Middleware\n";
         echo "\n";
+        echo "  Security:\n";
+        echo "    php zh.php generate:secret             Generate & set JWT secrets in .env\n";
+        echo "\n";
         echo "  Packages:\n";
         echo "    php zh.php vendor:publish <Provider>  Publish package assets\n";
         echo "\n";
@@ -99,14 +106,49 @@ function createDatabase(): void
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
         ]);
         $pdo->exec("CREATE DATABASE IF NOT EXISTS `$dbname` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-        echo "Database [{$dbname}] created or verified successfully!\n";
+        echo "  Database [{$dbname}] created successfully!\n";
     } catch (PDOException $e) {
         echo "Error creating database: " . $e->getMessage() . "\n";
+        exit(1);
     }
 }
 
 function migrateTables(): void
 {
+    $host   = env('DB_HOST', 'localhost');
+    $user   = env('DB_USER', 'root');
+    $pass   = env('DB_PASS', '');
+    $dbname = env('DB_NAME', 'mini_backend_db');
+
+    // ── Step 1: Check if the database exists ──
+    try {
+        new PDO("mysql:host={$host};dbname={$dbname}", $user, $pass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        ]);
+    } catch (PDOException $e) {
+        // MySQL error 1049 = Unknown database
+        if (str_contains($e->getMessage(), '1049') || str_contains($e->getMessage(), 'Unknown database')) {
+            echo "\n";
+            echo "  ⚠  Database [{$dbname}] does not exist.\n";
+            echo "  Would you like to create it now? [yes/no]: ";
+
+            $answer = strtolower(trim(fgets(STDIN)));
+
+            if (in_array($answer, ['yes', 'y'])) {
+                createDatabase();
+                // Small pause to let MySQL register the new DB
+                sleep(1);
+            } else {
+                echo "\n  Migration aborted. Database was not created.\n";
+                exit(1);
+            }
+        } else {
+            echo "  Error connecting to MySQL: " . $e->getMessage() . "\n";
+            exit(1);
+        }
+    }
+
+    // ── Step 2: Run migration files ──
     $migrationsDir = __DIR__ . '/database/migrations';
 
     if (!is_dir($migrationsDir)) {
@@ -120,7 +162,7 @@ function migrateTables(): void
         return;
     }
 
-    echo "Running Migrations...\n";
+    echo "\nRunning Migrations...\n";
     echo "──────────────────────────────────────────\n";
 
     foreach ($files as $file) {
@@ -133,7 +175,17 @@ function migrateTables(): void
                 echo "Skipped (Empty File)\n";
                 continue;
             }
-            \Core\DB::query($sql);
+
+            // Split into individual statements and skip USE / empty ones
+            $statements = array_filter(
+                array_map('trim', explode(';', $sql)),
+                fn($s) => $s !== '' && !preg_match('/^\s*USE\s+/i', $s)
+            );
+
+            foreach ($statements as $statement) {
+                \Core\DB::query($statement);
+            }
+
             echo "Done\n";
         } catch (Exception $e) {
             echo "Failed\n";
@@ -269,4 +321,87 @@ PHP;
 
     file_put_contents($path, $stub);
     echo "Middleware created: app/Middleware/{$name}.php\n";
+}
+
+// ──────────────────────────────────────────
+// Security Commands
+// ──────────────────────────────────────────
+
+function generateSecret(): void
+{
+    $envPath = __DIR__ . '/.env';
+
+    if (!file_exists($envPath)) {
+        echo "  Error: .env file not found.\n";
+        exit(1);
+    }
+
+    // Keys to generate
+    $keys = [
+        'JWT_SECRET',
+        'APP_SECRET',
+    ];
+
+    $envContent = file_get_contents($envPath);
+    $generated  = [];
+    $skipped    = [];
+
+    foreach ($keys as $key) {
+        $secret = bin2hex(random_bytes(32)); // 64-char hex = 256-bit
+
+        if (preg_match('/^' . $key . '=(.*)$/m', $envContent, $matches)) {
+            $existing = trim($matches[1]);
+
+            // Already has a real value (not a placeholder)
+            if ($existing !== '' && !str_contains($existing, 'your_') && !str_contains($existing, 'generate_with')) {
+                $skipped[] = $key;
+                continue;
+            }
+
+            // Replace existing placeholder
+            $envContent = preg_replace(
+                '/^' . $key . '=.*$/m',
+                $key . '=' . $secret,
+                $envContent
+            );
+        } else {
+            // Key doesn't exist → append it
+            $envContent .= "\n{$key}={$secret}";
+        }
+
+        $generated[] = $key;
+    }
+
+    file_put_contents($envPath, $envContent);
+
+    echo "\n";
+    echo "  ──────────────────────────────────────────\n";
+
+    foreach ($generated as $key) {
+        echo "  ✔  {$key} generated and saved.\n";
+    }
+
+    foreach ($skipped as $key) {
+        echo "  ⚠  {$key} already has a value — skipped. Use --force to override.\n";
+    }
+
+    if (empty($generated)) {
+        echo "  Nothing was changed.\n";
+    }
+
+    echo "  ──────────────────────────────────────────\n\n";
+
+    // Handle --force flag: regenerate even existing keys
+    global $argv;
+    if (in_array('--force', $argv) && !empty($skipped)) {
+        echo "  Running with --force, regenerating skipped keys...\n";
+        $envContent = file_get_contents($envPath);
+        foreach ($skipped as $key) {
+            $secret     = bin2hex(random_bytes(32));
+            $envContent = preg_replace('/^' . $key . '=.*$/m', $key . '=' . $secret, $envContent);
+            echo "  ✔  {$key} regenerated.\n";
+        }
+        file_put_contents($envPath, $envContent);
+        echo "\n";
+    }
 }
